@@ -1,17 +1,26 @@
+#!/usr/bin/env python3
 import os
 import rospy
 import rospkg
+from geometry_msgs.msg import PoseStamped, PointStamped, PoseWithCovarianceStamped
+import psycopg2
 
 from qt_gui.plugin import Plugin
 from python_qt_binding import loadUi
-from python_qt_binding.QtWidgets import QWidget
-
+from python_qt_binding.QtWidgets import QWidget,QPushButton,QVBoxLayout,QCheckBox,QLCDNumber
+ 
 class MyPlugin(Plugin):
 
     def __init__(self, context):
         super(MyPlugin, self).__init__(context)
         # Give QObjects reasonable names
+        self.points = [] # Add this line to define the "points" attribute
+
         self.setObjectName('MyPlugin')
+        # self.sub5 = rospy.Subscriber("amcl_pose", PoseWithCovarianceStamped, self.sub5_callback)
+        self.pub = rospy.Publisher("clicked_point", PointStamped, queue_size=100)
+
+  
 
         # Process standalone plugin command-line arguments
         from argparse import ArgumentParser
@@ -22,8 +31,8 @@ class MyPlugin(Plugin):
                       help="Put plugin in silent mode")
         args, unknowns = parser.parse_known_args(context.argv())
         if not args.quiet:
-            print 'arguments: ', args
-            print 'unknowns: ', unknowns
+            print('arguments: ', args)
+            print ('unknowns: ', unknowns)
 
         # Create QWidget
         self._widget = QWidget()
@@ -37,14 +46,151 @@ class MyPlugin(Plugin):
         # it's set in _widget). This is useful when you open multiple 
         # plugins at once. Also if you open multiple instances of your 
         # plugin at once, these lines add number to make it easy to 
+        self.insert_table = 'pose_a'
+
+
+
+
         # tell from pane to pane.
         if context.serial_number() > 1:
             self._widget.setWindowTitle(self._widget.windowTitle() + (' (%d)' % context.serial_number()))
         # Add widget to the user interface
+
         context.add_widget(self._widget)
 
+        # Create a button and add it to the layout
+  
+        button = self._widget.findChild(QPushButton, 'add_point_one_cilck')
+
+        button.clicked.connect(self.add_point_on_button_click2)
+        
+     
+        button2 = self._widget.findChild(QPushButton, 'save')
+
+        button2.clicked.connect(self.save_point_on_button_click2)
+
+        button3 = self._widget.findChild(QPushButton, 'delete_value_teble')
+
+        button3.clicked.connect(self.delete_data)
+
+
+        button4 = self._widget.findChild(QPushButton, 'remove_point')
+
+        button4.clicked.connect(self.remove_point)
+
+        button5 = self._widget.findChild(QPushButton, 'add_point_continue')
+
+        button5.clicked.connect(self.add_point_on_button_click2_continue)
+
+        button6 = self._widget.findChild(QPushButton, 'create_db')
+
+        button6.clicked.connect(self.create_db)
+        
+
+        button7 = self._widget.findChild(QPushButton, 'run_navigation_agv')
+        button7.clicked.connect(self.run_navigation_agv)
+
+        button8 = self._widget.findChild(QPushButton, 'run_navigation_agv')
+
+        button8.clicked.connect(self.run_visualize)
+
+
+        self.checkbox = self._widget.findChild(QCheckBox, 'pose_a')
+        self.checkbox.stateChanged.connect(self.update_table_name_a)
+        
+        self.checkbox = self._widget.findChild(QCheckBox, 'pose_b')
+        self.checkbox.stateChanged.connect(self.update_table_name_b)
+        
+        self.checkbox = self._widget.findChild(QCheckBox, 'pose_c')
+        self.checkbox.stateChanged.connect(self.update_table_name_c)
+
+        self.numberlcd = self._widget.findChild(QLCDNumber, 'arrypoint')
+
+        
+        self.conn = psycopg2.connect(
+            dbname="dbagv_test",
+            user="postgres",
+            password="pass1234",
+            host="localhost",
+            port="5432",
+        )
+    def insert_data(self, points):
+        # print(self.points)
+
+        print("Delete")
+
+        with self.conn:
+            with self.conn.cursor() as cur:
+                cur.execute(f"""DROP TABLE {self.insert_table}""")
+        self.conn.commit()
+
+        rospy.sleep(0.5)
+        print("CREATE")
+
+        with self.conn:
+            with self.conn.cursor() as cur:
+                cur.execute(f"""
+                    CREATE TABLE IF NOT EXISTS {self.insert_table} (
+                        id SERIAL PRIMARY KEY,
+                        position_x DOUBLE PRECISION,
+                        position_y DOUBLE PRECISION,
+                        position_z DOUBLE PRECISION
+                    )
+                """)
+        self.conn.commit()
+
+        rospy.sleep(0.5)
+        print("insert")
+
+        with self.conn.cursor() as cur:
+            for point in points:
+                cur.execute(f"""
+                    INSERT INTO {self.insert_table} (position_x, position_y, position_z)
+                    VALUES (%s, %s, %s)
+                """, (point.point.x, point.point.y, point.point.z))
+        self.conn.commit()
+
+    def create_db(self):  
+
+        rospy.sleep(0.5)
+        print("CREATE")
+
+        with self.conn:
+            with self.conn.cursor() as cur:
+                cur.execute(f"""
+                    CREATE TABLE IF NOT EXISTS {self.insert_table} (
+                        id SERIAL PRIMARY KEY,
+                        position_x DOUBLE PRECISION,
+                        position_y DOUBLE PRECISION,
+                        position_z DOUBLE PRECISION
+                    )
+                """)
+        self.conn.commit()
+
+    def run_navigation_agv(self):  
+        print("run_navigation_agv")
+
+        os.system('roslaunch nctc_guideless_navigation nctc_navigation.launch')
+
+    def run_visualize(self):  
+        print("run_visualize")
+
+        os.system('~/nctc_guideless/src/nctc_guideless_navigation/rviz/  rviz -d agv_navigation.rviz')
+
+
+
+    def delete_data(self, points):
+        print("delete")
+
+        with self.conn:
+            with self.conn.cursor() as cur:
+                cur.execute(f"""DROP TABLE {self.insert_table}""")
+        self.conn.commit()
+
+        rospy.sleep(0.5)
+    
     def shutdown_plugin(self):
-        # TODO unregister all publishers here
+        self.conn.close()
         pass
 
     def save_settings(self, plugin_settings, instance_settings):
@@ -61,3 +207,82 @@ class MyPlugin(Plugin):
         # Comment in to signal that the plugin has a way to configure
         # This will enable a setting button (gear icon) in each dock widget title bar
         # Usually used to open a modal configuration dialog
+    def add_point_on_button_click2(self):
+        # do something here when the button is clicked
+        # os.system('rosrun nctc_guideless_oper save_amcl_to_click_point.py ')
+        self.sub5 = rospy.Subscriber("amcl_pose", PoseWithCovarianceStamped, self.sub5_callback)
+        print("on_click")
+        rospy.sleep(0.5)
+        self.sub5.unregister()
+
+    def add_point_on_button_click2_continue(self):
+        # do something here when the button is clicked
+        # os.system('rosrun nctc_guideless_oper save_amcl_to_click_point.py ')
+        self.sub5 = rospy.Subscriber("amcl_pose", PoseWithCovarianceStamped, self.sub5_callback)
+        print("on_click")
+        rospy.sleep(0.5)
+
+    def save_point_on_button_click2(self):
+        # do something here when the button is clicked
+        # os.system('rosrun nctc_guideless_oper save_amcl_to_click_point.py ')
+        # self.sub5 = rospy.Subscriber("amcl_pose", PoseWithCovarianceStamped, self.sub5_callback)
+        print("on_click2")
+
+        # list_len = len(self.points)
+        # print(list_len)
+
+        # print(self.points)
+
+        self.insert_data(self.points)
+
+
+    def remove_point(self):
+        # do something here when the button is clicked
+        # os.system('rosrun nctc_guideless_oper save_amcl_to_click_point.py ')
+        # self.sub5 = rospy.Subscriber("amcl_pose", PoseWithCovarianceStamped, self.sub5_callback)
+        self.numberlcd.display(0)
+
+        print("remove_point")
+        self.points.clear()
+
+        # list_len = len(self.points)
+        # print(list_len)
+
+        # print(self.points)
+
+    def update_table_name_a(self, state):
+        print("update_table_name_a")
+        if state:
+            self.insert_table = 'pose_a'
+    
+    def update_table_name_b(self, state):
+        print("update_table_name_b")
+        if state:
+            self.insert_table = 'pose_b'
+
+    def update_table_name_c(self, state):
+        print("update_table_name_c")
+        if state:
+            self.insert_table = 'pose_c'
+
+    def sub5_callback(self, msg):
+        self.msg_raw_odom = msg.pose.pose.orientation.z
+        point_stamped = PointStamped()
+        # point_stamped.header.seq = row[0]
+        rospy.sleep(0.5)
+
+        point_stamped.header.stamp = rospy.Time.now()
+        point_stamped.header.frame_id = "map"
+        point_stamped.point.x = msg.pose.pose.position.x
+        point_stamped.point.y =  msg.pose.pose.position.y
+        point_stamped.point.z =  msg.pose.pose.orientation.z
+        rospy.sleep(0.5)
+        self.points.append(point_stamped)  # append the new PointStamped message to the list
+        #self.points.push(point_stamped)
+        list_len = len(self.points)
+        self.numberlcd.display(list_len)
+
+        self.pub.publish(point_stamped)
+
+        print(point_stamped)
+
