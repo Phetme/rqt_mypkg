@@ -7,7 +7,8 @@ import psycopg2
 
 from qt_gui.plugin import Plugin
 from python_qt_binding import loadUi
-from python_qt_binding.QtWidgets import QWidget,QPushButton,QVBoxLayout,QCheckBox,QLCDNumber
+from python_qt_binding.QtWidgets import QWidget,QPushButton,QVBoxLayout,QCheckBox,QLCDNumber,QLineEdit
+
  
 class MyPlugin(Plugin):
 
@@ -15,6 +16,8 @@ class MyPlugin(Plugin):
         super(MyPlugin, self).__init__(context)
         # Give QObjects reasonable names
         self.points = [] # Add this line to define the "points" attribute
+        self.issendpoint = None
+        self.count= 0
 
         self.setObjectName('MyPlugin')
         # self.sub5 = rospy.Subscriber("amcl_pose", PoseWithCovarianceStamped, self.sub5_callback)
@@ -91,8 +94,12 @@ class MyPlugin(Plugin):
         button7.clicked.connect(self.run_navigation_agv)
 
         button8 = self._widget.findChild(QPushButton, 'run_navigation_agv')
-
         button8.clicked.connect(self.run_visualize)
+
+
+
+        button9 = self._widget.findChild(QPushButton, 'cancel_click_point')
+        button9.clicked.connect(self.cancel_click_point)
 
 
         self.checkbox = self._widget.findChild(QCheckBox, 'pose_a')
@@ -106,7 +113,10 @@ class MyPlugin(Plugin):
 
         self.numberlcd = self._widget.findChild(QLCDNumber, 'arrypoint')
 
-        
+        # self.lineedit = 
+        self.line_edit =self._widget.findChild(QLineEdit,'intervel_point')
+        self.line_edit.setPlaceholderText('Enter text here')
+
         self.conn = psycopg2.connect(
             dbname="dbagv_test",
             user="postgres",
@@ -210,23 +220,35 @@ class MyPlugin(Plugin):
     def add_point_on_button_click2(self):
         # do something here when the button is clicked
         # os.system('rosrun nctc_guideless_oper save_amcl_to_click_point.py ')
+        print("add_point_on_button_click2")
+
+        self.issendpoint = True
+
         self.sub5 = rospy.Subscriber("amcl_pose", PoseWithCovarianceStamped, self.sub5_callback)
-        print("on_click")
+
         rospy.sleep(0.5)
         self.sub5.unregister()
 
+
     def add_point_on_button_click2_continue(self):
-        # do something here when the button is clicked
-        # os.system('rosrun nctc_guideless_oper save_amcl_to_click_point.py ')
+
+        # self.sub5 = rospy.Subscriber("amcl_pose", PoseWithCovarianceStamped, self.sub5_callback)
+        # print("add_point_on_button_click2_continue")
+        # rospy.sleep(0.5)
+        self.issendpoint = True
+        print("issendpoint == true")
         self.sub5 = rospy.Subscriber("amcl_pose", PoseWithCovarianceStamped, self.sub5_callback)
-        print("on_click")
-        rospy.sleep(0.5)
+        print("add_point_on_button_click2_continue")
+        rospy.sleep(0.2)
+        self.issendpoint = False
+
+        print("issendpoint == False")
 
     def save_point_on_button_click2(self):
         # do something here when the button is clicked
         # os.system('rosrun nctc_guideless_oper save_amcl_to_click_point.py ')
         # self.sub5 = rospy.Subscriber("amcl_pose", PoseWithCovarianceStamped, self.sub5_callback)
-        print("on_click2")
+        print("save_point")
 
         # list_len = len(self.points)
         # print(list_len)
@@ -250,6 +272,16 @@ class MyPlugin(Plugin):
 
         # print(self.points)
 
+    def cancel_click_point(self):
+        print("cancel_click_point")
+        self.sub5.unregister()
+        # text = self.lineedit.text()
+        # print(text)
+
+
+
+        
+
     def update_table_name_a(self, state):
         print("update_table_name_a")
         if state:
@@ -266,23 +298,54 @@ class MyPlugin(Plugin):
             self.insert_table = 'pose_c'
 
     def sub5_callback(self, msg):
-        self.msg_raw_odom = msg.pose.pose.orientation.z
-        point_stamped = PointStamped()
-        # point_stamped.header.seq = row[0]
-        rospy.sleep(0.5)
+        if(self.issendpoint == True):
+            self.msg_raw_odom = msg.pose.pose.orientation.z
+            point_stamped = PointStamped()
+            # point_stamped.header.seq = row[0]
 
-        point_stamped.header.stamp = rospy.Time.now()
-        point_stamped.header.frame_id = "map"
-        point_stamped.point.x = msg.pose.pose.position.x
-        point_stamped.point.y =  msg.pose.pose.position.y
-        point_stamped.point.z =  msg.pose.pose.orientation.z
-        rospy.sleep(0.5)
-        self.points.append(point_stamped)  # append the new PointStamped message to the list
-        #self.points.push(point_stamped)
-        list_len = len(self.points)
-        self.numberlcd.display(list_len)
+            point_stamped.header.stamp = rospy.Time.now()
+            point_stamped.header.frame_id = "map"
+            point_stamped.point.x = msg.pose.pose.position.x
+            point_stamped.point.y =  msg.pose.pose.position.y
+            point_stamped.point.z =  msg.pose.pose.orientation.z
+            rospy.sleep(0.5)
+        
+            self.points.append(point_stamped)  # append the new PointStamped message to the list
+            #self.points.push(point_stamped)
+            list_len = len(self.points)
+            self.numberlcd.display(list_len)
 
-        self.pub.publish(point_stamped)
+            self.pub.publish(point_stamped)
 
-        print(point_stamped)
+            print(point_stamped)
+        else:
+            self.count =  self.count +  1
+       
+            text = self.line_edit.text()
+            my_int = int(text)
+            print(my_int)
+            print(self.count)
+            if  self.count == my_int:
 
+                self.msg_raw_odom = msg.pose.pose.orientation.z
+                point_stamped = PointStamped()
+                # point_stamped.header.seq = row[0]
+
+                point_stamped.header.stamp = rospy.Time.now()
+                point_stamped.header.frame_id = "map"
+                point_stamped.point.x = msg.pose.pose.position.x
+                point_stamped.point.y =  msg.pose.pose.position.y
+                point_stamped.point.z =  msg.pose.pose.orientation.z
+                rospy.sleep(0.5)
+            
+                self.points.append(point_stamped)  # append the new PointStamped message to the list
+                #self.points.push(point_stamped)
+                list_len = len(self.points)
+                self.numberlcd.display(list_len)
+
+                self.pub.publish(point_stamped)
+
+                print(point_stamped)
+                self.count = 0
+
+      
