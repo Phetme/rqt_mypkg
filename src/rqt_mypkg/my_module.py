@@ -121,7 +121,7 @@ class MyPlugin(Plugin):
             dbname="dbagv8",
             user="postgres",
             password="pass1234",
-            host="192.168.54.165",
+            host="172.10.4.132",
             port="5432",
         )
     def insert_data(self, points):
