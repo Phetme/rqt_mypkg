@@ -118,10 +118,10 @@ class MyPlugin(Plugin):
         self.line_edit.setPlaceholderText('Enter text here')
 
         self.conn = psycopg2.connect(
-            dbname="dbagv_test",
+            dbname="dbagv8",
             user="postgres",
             password="pass1234",
-            host="localhost",
+            host="192.168.54.165",
             port="5432",
         )
     def insert_data(self, points):
