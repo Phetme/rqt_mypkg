@@ -4,7 +4,11 @@ import rospy
 import rospkg
 from geometry_msgs.msg import PoseStamped, PointStamped, PoseWithCovarianceStamped
 import psycopg2
+import sys
+from os.path import join, dirname
 
+sys.path.append('/home/jetson/Desktop')
+import db_connection
 from qt_gui.plugin import Plugin
 from python_qt_binding import loadUi
 from python_qt_binding.QtWidgets import QWidget,QPushButton,QVBoxLayout,QCheckBox,QLCDNumber,QLineEdit
@@ -143,13 +147,15 @@ class MyPlugin(Plugin):
         #     port="5432",
         # )
 
-        self.conn = psycopg2.connect(
-            dbname="dbagv_test",
-            user="postgres",
-            password="pass1234",
-            host="localhost",
-            port="5432",
-        )
+        # self.conn = psycopg2.connect(
+        #     dbname="dbagv8",
+        #     user="postgres",
+        #     password="pass1234",
+        #     host="localhost",
+        #     port="5432",
+        # )
+
+        self.conn = db_connection.get_connection()
     def insert_data(self, points):
         # print(self.points)
 
