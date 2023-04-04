@@ -84,9 +84,15 @@
   <widget class="QCheckBox" name="pose_a">
    <property name="geometry">
     <rect>
+<<<<<<< HEAD
      <x>250</x>
      <y>230</y>
      <width>221</width>
+=======
+     <x>340</x>
+     <y>290</y>
+     <width>92</width>
+>>>>>>> 7906751b5482995363d5e164a9abdb00ecdcb6ce
      <height>23</height>
     </rect>
    </property>
@@ -97,9 +103,15 @@
   <widget class="QCheckBox" name="pose_b">
    <property name="geometry">
     <rect>
+<<<<<<< HEAD
      <x>250</x>
      <y>250</y>
      <width>231</width>
+=======
+     <x>340</x>
+     <y>310</y>
+     <width>92</width>
+>>>>>>> 7906751b5482995363d5e164a9abdb00ecdcb6ce
      <height>23</height>
     </rect>
    </property>
@@ -110,9 +122,15 @@
   <widget class="QCheckBox" name="pose_c">
    <property name="geometry">
     <rect>
+<<<<<<< HEAD
      <x>250</x>
      <y>270</y>
      <width>231</width>
+=======
+     <x>340</x>
+     <y>330</y>
+     <width>92</width>
+>>>>>>> 7906751b5482995363d5e164a9abdb00ecdcb6ce
      <height>23</height>
     </rect>
    </property>
@@ -338,8 +356,13 @@
   <widget class="QLabel" name="label_10">
    <property name="geometry">
     <rect>
+<<<<<<< HEAD
      <x>600</x>
      <y>270</y>
+=======
+     <x>490</x>
+     <y>170</y>
+>>>>>>> 7906751b5482995363d5e164a9abdb00ecdcb6ce
      <width>111</width>
      <height>21</height>
     </rect>
@@ -351,9 +374,15 @@
   <widget class="QCheckBox" name="pose_c_init">
    <property name="geometry">
     <rect>
+<<<<<<< HEAD
      <x>651</x>
      <y>90</y>
      <width>211</width>
+=======
+     <x>250</x>
+     <y>80</y>
+     <width>92</width>
+>>>>>>> 7906751b5482995363d5e164a9abdb00ecdcb6ce
      <height>23</height>
     </rect>
    </property>
@@ -364,9 +393,15 @@
   <widget class="QCheckBox" name="pose_a_init">
    <property name="geometry">
     <rect>
+<<<<<<< HEAD
      <x>651</x>
      <y>50</y>
      <width>211</width>
+=======
+     <x>250</x>
+     <y>40</y>
+     <width>92</width>
+>>>>>>> 7906751b5482995363d5e164a9abdb00ecdcb6ce
      <height>23</height>
     </rect>
    </property>
@@ -377,9 +412,15 @@
   <widget class="QCheckBox" name="pose_b_init">
    <property name="geometry">
     <rect>
+<<<<<<< HEAD
      <x>651</x>
      <y>70</y>
      <width>211</width>
+=======
+     <x>250</x>
+     <y>60</y>
+     <width>92</width>
+>>>>>>> 7906751b5482995363d5e164a9abdb00ecdcb6ce
      <height>23</height>
     </rect>
    </property>
@@ -390,9 +431,15 @@
   <widget class="QPushButton" name="add_point_init_2">
    <property name="geometry">
     <rect>
+<<<<<<< HEAD
      <x>560</x>
      <y>130</y>
      <width>341</width>
+=======
+     <x>220</x>
+     <y>120</y>
+     <width>161</width>
+>>>>>>> 7906751b5482995363d5e164a9abdb00ecdcb6ce
      <height>25</height>
     </rect>
    </property>
@@ -403,9 +450,15 @@
   <widget class="QPushButton" name="save_init">
    <property name="geometry">
     <rect>
+<<<<<<< HEAD
      <x>678</x>
      <y>160</y>
      <width>181</width>
+=======
+     <x>250</x>
+     <y>150</y>
+     <width>89</width>
+>>>>>>> 7906751b5482995363d5e164a9abdb00ecdcb6ce
      <height>25</height>
     </rect>
    </property>
