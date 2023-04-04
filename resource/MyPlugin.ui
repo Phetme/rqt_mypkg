@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Form</class>
- <widget class="QWidget" name="Form">
+ <class>add_point_init</class>
+ <widget class="QWidget" name="add_point_init">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>632</width>
-    <height>360</height>
+    <width>2736</width>
+    <height>1600</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,9 +16,9 @@
   <widget class="QPushButton" name="add_point_one_cilck">
    <property name="geometry">
     <rect>
-     <x>450</x>
-     <y>130</y>
-     <width>161</width>
+     <x>430</x>
+     <y>230</y>
+     <width>291</width>
      <height>25</height>
     </rect>
    </property>
@@ -29,9 +29,9 @@
   <widget class="QPushButton" name="save">
    <property name="geometry">
     <rect>
-     <x>420</x>
-     <y>320</y>
-     <width>89</width>
+     <x>250</x>
+     <y>310</y>
+     <width>191</width>
      <height>25</height>
     </rect>
    </property>
@@ -42,9 +42,9 @@
   <widget class="QPushButton" name="remove_point">
    <property name="geometry">
     <rect>
-     <x>510</x>
-     <y>10</y>
-     <width>111</width>
+     <x>450</x>
+     <y>20</y>
+     <width>191</width>
      <height>25</height>
     </rect>
    </property>
@@ -55,9 +55,9 @@
   <widget class="QPushButton" name="not_save">
    <property name="geometry">
     <rect>
-     <x>520</x>
-     <y>320</y>
-     <width>89</width>
+     <x>250</x>
+     <y>350</y>
+     <width>191</width>
      <height>25</height>
     </rect>
    </property>
@@ -68,9 +68,9 @@
   <widget class="QPushButton" name="delete_value_teble">
    <property name="geometry">
     <rect>
-     <x>340</x>
-     <y>10</y>
-     <width>161</width>
+     <x>170</x>
+     <y>20</y>
+     <width>271</width>
      <height>25</height>
     </rect>
    </property>
@@ -85,8 +85,8 @@
    <property name="geometry">
     <rect>
      <x>250</x>
-     <y>40</y>
-     <width>92</width>
+     <y>230</y>
+     <width>221</width>
      <height>23</height>
     </rect>
    </property>
@@ -98,8 +98,8 @@
    <property name="geometry">
     <rect>
      <x>250</x>
-     <y>60</y>
-     <width>92</width>
+     <y>250</y>
+     <width>231</width>
      <height>23</height>
     </rect>
    </property>
@@ -111,8 +111,8 @@
    <property name="geometry">
     <rect>
      <x>250</x>
-     <y>80</y>
-     <width>92</width>
+     <y>270</y>
+     <width>231</width>
      <height>23</height>
     </rect>
    </property>
@@ -123,9 +123,9 @@
   <widget class="QPushButton" name="add_point_continue">
    <property name="geometry">
     <rect>
-     <x>450</x>
-     <y>230</y>
-     <width>161</width>
+     <x>460</x>
+     <y>330</y>
+     <width>261</width>
      <height>25</height>
     </rect>
    </property>
@@ -136,9 +136,9 @@
   <widget class="QLCDNumber" name="arrypoint">
    <property name="geometry">
     <rect>
-     <x>500</x>
-     <y>60</y>
-     <width>111</width>
+     <x>370</x>
+     <y>160</y>
+     <width>151</width>
      <height>51</height>
     </rect>
    </property>
@@ -146,8 +146,8 @@
   <widget class="QLabel" name="label_5">
    <property name="geometry">
     <rect>
-     <x>390</x>
-     <y>80</y>
+     <x>240</x>
+     <y>180</y>
      <width>101</width>
      <height>21</height>
     </rect>
@@ -159,9 +159,9 @@
   <widget class="QPushButton" name="create_db">
    <property name="geometry">
     <rect>
-     <x>240</x>
-     <y>10</y>
-     <width>89</width>
+     <x>638</x>
+     <y>20</y>
+     <width>211</width>
      <height>25</height>
     </rect>
    </property>
@@ -315,9 +315,9 @@
   <widget class="QPushButton" name="cancel_click_point">
    <property name="geometry">
     <rect>
-     <x>450</x>
-     <y>260</y>
-     <width>161</width>
+     <x>470</x>
+     <y>360</y>
+     <width>251</width>
      <height>25</height>
     </rect>
    </property>
@@ -328,9 +328,9 @@
   <widget class="QLineEdit" name="intervel_point">
    <property name="geometry">
     <rect>
-     <x>490</x>
-     <y>190</y>
-     <width>113</width>
+     <x>472</x>
+     <y>290</y>
+     <width>241</width>
      <height>25</height>
     </rect>
    </property>
@@ -338,14 +338,79 @@
   <widget class="QLabel" name="label_10">
    <property name="geometry">
     <rect>
-     <x>360</x>
-     <y>190</y>
+     <x>600</x>
+     <y>270</y>
      <width>111</width>
      <height>21</height>
     </rect>
    </property>
    <property name="text">
     <string>click point every</string>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="pose_c_init">
+   <property name="geometry">
+    <rect>
+     <x>651</x>
+     <y>90</y>
+     <width>211</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>pose_c_init</string>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="pose_a_init">
+   <property name="geometry">
+    <rect>
+     <x>651</x>
+     <y>50</y>
+     <width>211</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>pose_a_init</string>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="pose_b_init">
+   <property name="geometry">
+    <rect>
+     <x>651</x>
+     <y>70</y>
+     <width>211</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>pose_b_init</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="add_point_init_2">
+   <property name="geometry">
+    <rect>
+     <x>560</x>
+     <y>130</y>
+     <width>341</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>add_point_init</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="save_init">
+   <property name="geometry">
+    <rect>
+     <x>678</x>
+     <y>160</y>
+     <width>181</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>save_init</string>
    </property>
   </widget>
  </widget>

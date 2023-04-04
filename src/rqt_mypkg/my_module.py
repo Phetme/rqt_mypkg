@@ -51,8 +51,9 @@ class MyPlugin(Plugin):
         # plugin at once, these lines add number to make it easy to 
         self.insert_table = 'pose_a'
 
+        self.update_table = 'pose_a_init'
 
-
+        self.id_update = "1"
 
         # tell from pane to pane.
         if context.serial_number() > 1:
@@ -96,20 +97,37 @@ class MyPlugin(Plugin):
         button8 = self._widget.findChild(QPushButton, 'run_navigation_agv')
         button8.clicked.connect(self.run_visualize)
 
+        button9 = self._widget.findChild(QPushButton, 'run_navigation_agv')
+        button9.clicked.connect(self.run_navigation_agv)
 
+        button10 = self._widget.findChild(QPushButton, 'add_point_init_2')
+        button10.clicked.connect(self.add_point_init_2)
 
-        button9 = self._widget.findChild(QPushButton, 'cancel_click_point')
-        button9.clicked.connect(self.cancel_click_point)
+        button11 = self._widget.findChild(QPushButton, 'save_init')
+
+        button11.clicked.connect(self.save_point_init_on_button_click2)
 
 
         self.checkbox = self._widget.findChild(QCheckBox, 'pose_a')
-        self.checkbox.stateChanged.connect(self.update_table_name_a)
+        self.checkbox.stateChanged.connect(self.insert_table_name_a)
         
         self.checkbox = self._widget.findChild(QCheckBox, 'pose_b')
-        self.checkbox.stateChanged.connect(self.update_table_name_b)
+        self.checkbox.stateChanged.connect(self.insert_table_name_b)
         
         self.checkbox = self._widget.findChild(QCheckBox, 'pose_c')
+        self.checkbox.stateChanged.connect(self.insert_table_name_c)
+
+
+        self.checkbox = self._widget.findChild(QCheckBox, 'pose_a_init')
+        self.checkbox.stateChanged.connect(self.update_table_name_a)
+        
+        self.checkbox = self._widget.findChild(QCheckBox, 'pose_b_init')
+        self.checkbox.stateChanged.connect(self.update_table_name_b)
+        
+        self.checkbox = self._widget.findChild(QCheckBox, 'pose_c_init')
         self.checkbox.stateChanged.connect(self.update_table_name_c)
+
+
 
         self.numberlcd = self._widget.findChild(QLCDNumber, 'arrypoint')
 
@@ -117,13 +135,29 @@ class MyPlugin(Plugin):
         self.line_edit =self._widget.findChild(QLineEdit,'intervel_point')
         self.line_edit.setPlaceholderText('Enter text here')
 
+        # self.conn = psycopg2.connect(
+        #     dbname="dbagv8",
+        #     user="postgres",
+        #     password="pass1234",
+        #     host="192.168.54.165",
+        #     port="5432",
+        # )
+
         self.conn = psycopg2.connect(
             dbname="dbagv8",
             user="postgres",
             password="pass1234",
-            host="172.10.4.132",
+            host="localhost",
             port="5432",
         )
+
+        # self.conn = psycopg2.connect(
+        #     dbname="dbagv8",
+        #     user="postgres",
+        #     password="pass1234",
+        #     host="192.168.54.165",
+        #     port="5432",
+        # )
     def insert_data(self, points):
         # print(self.points)
 
@@ -176,6 +210,23 @@ class MyPlugin(Plugin):
                     )
                 """)
         self.conn.commit()
+
+
+    def update_data(self,points):
+        rospy.sleep(0.5)
+        print(self.id_update)
+
+        with self.conn.cursor() as cur:
+            for point in points:
+                print(self.id_update)
+
+                cur.execute(f"""
+                    UPDATE {self.update_table}
+                    SET position_x = %s, position_y = %s, position_z = %s
+                    WHERE id = %s::integer
+                """, (point.point.x, point.point.y, point.point.z, int(self.id_update)))
+        self.conn.commit()
+
 
     def run_navigation_agv(self):  
         print("run_navigation_agv")
@@ -257,6 +308,20 @@ class MyPlugin(Plugin):
 
         self.insert_data(self.points)
 
+    def save_point_init_on_button_click2(self):
+        # do something here when the button is clicked
+        # os.system('rosrun nctc_guideless_oper save_amcl_to_click_point.py ')
+        # self.sub5 = rospy.Subscriber("amcl_pose", PoseWithCovarianceStamped, self.sub5_callback)
+        print("save_point_init")
+
+        # list_len = len(self.points)
+        # print(list_len)
+
+        # print(self.points)
+
+        self.update_data(self.points)
+
+
 
     def remove_point(self):
         # do something here when the button is clicked
@@ -278,24 +343,52 @@ class MyPlugin(Plugin):
         # text = self.lineedit.text()
         # print(text)
 
+    def add_point_init_2(self):
+        print("add_point_init_2")
+        self.issendpoint = True
+
+        self.sub5 = rospy.Subscriber("amcl_pose", PoseWithCovarianceStamped, self.sub5_callback)
+
+        rospy.sleep(0.5)
+        self.sub5.unregister()
 
 
         
 
+    def insert_table_name_a(self, state):
+        print("insert_table_name_a")
+        if state:
+            self.insert_table = 'pose_a'
+    
+    def insert_table_name_b(self, state):
+        print("insert_table_name_b")
+        if state:
+            self.insert_table = 'pose_b'
+
+    def insert_table_name_c(self, state):
+        print("insert_table_name_c")
+        if state:
+            self.insert_table = 'pose_c'
+
+
+
     def update_table_name_a(self, state):
         print("update_table_name_a")
         if state:
-            self.insert_table = 'pose_a'
+            self.update_table = 'pose_init'
+            self.id_update = "1"
     
     def update_table_name_b(self, state):
         print("update_table_name_b")
         if state:
-            self.insert_table = 'pose_b'
+            self.update_table = 'pose_init'
+            self.id_update = "2"
 
     def update_table_name_c(self, state):
         print("update_table_name_c")
         if state:
-            self.insert_table = 'pose_c'
+            self.update_table = 'pose_init'
+            self.id_update= "3"
 
     def sub5_callback(self, msg):
         if(self.issendpoint == True):
